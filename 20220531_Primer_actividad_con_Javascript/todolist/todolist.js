@@ -1,29 +1,5 @@
 
 
-// // Create a "close" button and append it to each list item
-// var myNodelist = document.getElementsByTagName("LI");
-// var i;
-// for (i = 0; i < myNodelist.length; i++)
-// {
-//   var span = document.createElement("SPAN");
-//   var txt = document.createTextNode("\u00D7");
-//   span.className = "close";
-//   span.appendChild(txt);
-//   myNodelist[i].appendChild(span);
-// }
-
-// Click on a close button to hide the current list item
-// var close = document.getElementsByClassName("close");
-// var i;
-// for (i = 0; i < close.length; i++) 
-// {
-//   close[i].onclick = function()
-//   {
-//     var div = this.parentElement;
-//     div.style.display = "none";
-//   }
-// }
-
 // Add a "checked" symbol when clicking on a list item
 var list = document.querySelector('ul');
 list.addEventListener('click', function(ev) 
@@ -34,49 +10,17 @@ list.addEventListener('click', function(ev)
   }
 }, false);
 
-// // Create a new list item when clicking on the "Add" button
-// function newElement() 
-// {
-//   var li = document.createElement("li");
-//   var inputValue = document.getElementById("myInput").value;
-//   var t = document.createTextNode(inputValue);
-//   li.appendChild(t);
-//   if (inputValue === '') 
-//   {
-//     alert("You must write something!");
-//   } else 
-//   {
-//     document.getElementById("myUL").appendChild(li);
-//   }
-
-//   document.getElementById("myInput").value = "";
-
-  // var span = document.createElement("SPAN");
-  // var txt = document.createTextNode("\u00D7");
-  // span.className = "close";
-  // span.appendChild(txt);
-  // li.appendChild(span);
-
-  // for (i = 0; i < close.length; i++)
-  // {
-  //   close[i].onclick = function() 
-  //   {
-  //     var div = this.parentElement;
-  //     div.style.display = "none";
-  //   }
-  // }
-// }
-
+//Objetos del DOM
 const noteInput = document.getElementById("myInput");
 const notes = document.getElementById("myUL");
 const noteForm = document.getElementById("note-form");
-// const ButtonX = document.getElementById("ButtonX");
-// ButtonX.style.display = 'none';
 
+//If logico que almacena en el array los datos agregados en el localstorage o un array vacio
 let notesStorage = localStorage.getItem("notes")
   ? JSON.parse(localStorage.getItem("notes"))
   : [];
 
+  //Se agrega el evento de envio
   noteForm.addEventListener("submit", (e) => 
   {
     e.preventDefault();
@@ -88,10 +32,13 @@ let notesStorage = localStorage.getItem("notes")
     alert("You must write something!");
   } else 
   {
+    //Almacena en el array el valor de la entrada del input
     notesStorage.push(noteInput.value);
+
+    //Almacena en el localstorage el array
     localStorage.setItem("notes", JSON.stringify(notesStorage));
-    listBuilder(noteInput.value);
-    noteInput.value = "";
+    listBuilder(noteInput.value);//Llama a la funcion de listar y le pasa los valores por parametro
+    noteInput.value = ""; //Resetea el valor de entrada
   }
     
   });
@@ -100,28 +47,25 @@ let notesStorage = localStorage.getItem("notes")
   {
     const note = document.createElement("li");
     
-    // ButtonX.addEventListener("submit", (e) =>
-    // {
-    //   e.preventDefault();
-    //   deleteNote(this);
-
-    // })
-    // let test = ButtonX.outerHTML;
+    //Se le agrega a los items el texto mas el boton X
     note.innerHTML = text + ' <button class="btn-neon" onclick="deleteNote(this)">x</button>';
+
+    //Agrega los Li dentro de los Ul
     notes.appendChild(note);
   };
 
-  const getNotes = JSON.parse(localStorage.getItem("notes"));
-getNotes.forEach((note) => 
+
+  const Allnotes = JSON.parse(localStorage.getItem("notes"));//Almacena el array completo en formato Json
+Allnotes.forEach((note) => //Recorre cada elemento del array
 {
-  listBuilder(note);
+  listBuilder(note);//Cada elemento es pasado como parametro a dicha función
 });
 
-const deleteNote = (btn) => 
+const deleteNote = (btn) => //Recibe todo el objeto del botón
 {
-  let el = btn.parentNode;
-  const index = [...el.parentElement.children].indexOf(el);
-  notesStorage.splice(index, 1);
-  localStorage.setItem("notes", JSON.stringify(notesStorage));
-  el.remove();
+  let li = btn.parentNode;//Se obtiene el li completo
+  const index = [...li.parentElement.children].indexOf(li);//Obtiene el indice del li,construyendo una lista a partir de todo lo que hay en el ul
+  notesStorage.splice(index, 1);//Borra el item del localstorage
+  localStorage.setItem("notes", JSON.stringify(notesStorage));//Actualiza localstorage con el elemento ya eliminado
+  li.remove();//Elmina de la vista el li
 };
